@@ -1,0 +1,427 @@
+<!-- qutation & sale qutation & proforma & Delivery note live_header_footer -->
+<t t-name="web.external_layout_standard">
+        <div t-attf-class="header o_company_#{company.id}_layout">
+           <t t-if="is_proforma">
+    <style>
+<link href="https://fonts.cdnfonts.com/css/calibri-light" rel="stylesheet"/>
+ @import url('https://fonts.cdnfonts.com/css/calibri-light');
+    .ss-title-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 8px;
+    }
+    .ss-title-table td {
+        border: none !important;
+        padding: 0;
+    }
+    .ss-title-box {
+        <!--border: 2px solid #000;-->
+        padding: 6px 0px 0px 50px;
+        <!--font-weight: bold;-->
+        font-size: 20px;
+        text-align: center;
+        white-space: nowrap;
+        color:#0A27A1;
+        
+    }
+    .ss-title-box-ar {
+        direction: rtl;
+        <!--border: 2px solid #000;-->
+        padding: 6px 90px 6px 60px;
+        <!--font-weight: bold;-->
+        font-size: 20px;
+        text-align: center;
+        white-space: nowrap;
+        color:#0A27A1;
+    }
+    .ss-logo-cell {
+        text-align: center;
+    }
+   
+</style>
+
+<table class="ss-title-table" style="border:none !important;">
+    <tbody style="border:none !important;">
+    <tr style="border:none !important;">
+        <!-- اليسار: Pro-Forma Invoice داخل مربع -->
+        <td style="width:25%; text-align:center;  font-family: 'Calibri Light', sans-serif; ">
+            <div class="ss-title-box">
+                Pro-Forma Invoice
+            </div>
+        </td>
+
+        <!-- المنتصف: اللوجو -->
+        <td class="ss-logo-cell" style="width:100%;">
+            <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" style="max-height:150px;"/>
+        </td>
+
+        <!-- اليمين: فاتورة أولية داخل مربع -->
+        <td style="width:25%; text-align:center;  font-family: 'Calibri Light', sans-serif; ">
+            <div class="ss-title-box-ar">
+                فاتورة أولية
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+    </t>
+<t t-else="">
+  <!-- other invoices header-->
+     <style>
+    table.o_main_table,
+    table.o_main_table &gt; tbody &gt; tr &gt; td {
+        border: none !important;
+    }
+    
+    .article.o_report_layout_standard,
+    .article.o_report_layout_standard .page {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    .ss-header-table { width:100%; border-collapse:collapse;}
+    .ss-box       { border:1px solid #000; padding:2px 6px; font-size:12px; font-weight:bold;}
+    .ss-line      { border-top:2px solid #000; margin:4px 0; }
+    .ss-title-row { font-weight:bold; font-size:16px; }
+    .ss-block     { border:2px solid #000; border-radius:10px; padding:4px; }
+    .ss-block-title {
+        font-weight:bold;
+        text-align:center;
+        font-size:13px;
+        border-bottom:1px solid #000;
+        margin-bottom:4px;
+    }
+    
+    .ss-main-top-table,
+    .ss-main-top-table tr,
+    .ss-main-top-table td {
+        border: none !important;
+        outline:none !important;
+    }
+    
+    .ss-block-table {
+        width:100%;
+        font-size:14px;
+        border-collapse:collapse;
+        border:none !important;
+        outline:none !important;
+    }
+    
+    .ss-block-table tr,
+    .ss-block-table td {
+        padding:1px 2px;
+        border:none !important;
+        outline:none !important;
+    }
+    
+    .dd-line tbody,
+    .dd-line td,
+    .dd-line tr {
+    border:none !important;--&gt;
+   
+    }
+
+    tbody {
+        border:none !important;
+        outline:none !important;
+    }
+    
+    
+  .ss-block-table {
+        width:100%;
+        font-size:14px;
+        border-collapse:separate;  
+        border-spacing:0 3px;     
+    }
+
+    .ss-block-table tr,
+    .ss-block-table td {
+        padding:1px 2px;
+        border:none !important;
+        outline:none !important;
+    }
+
+    .ss-value-cell {
+        background-color:#F2EADC;
+        text-align:center;
+        padding:3px 4px;
+    }
+</style>
+        <table class="ss-header-table" style="border:none !important;">
+            <tr style="border:none !important;">
+                <td style="width:40%; text-align:left; vertical-align:top; border:none !important;">
+                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="width:150px; height:95px;"/>
+                </td>
+                <td style="width:50%; vertical-align:top; border:none !important;">
+                    <table style="width:100%; border-collapse:collapse; border:none !important;">
+                        <tr style="border:none !important;">
+                            <td style="text-align:left; font-weight:bold; border:none !important;">
+                            VAT ID:
+                        </td>
+                            <td style="text-align:center; direction:rtl; font-weight:bold; border:none !important;">
+                                <span t-esc="company.vat"/>
+                            </td>
+                            <td style="text-align:right; direction:rtl; font-weight:bold; border:none !important;">
+                         الرقم الضريبى :
+                        </td>
+                        </tr>
+                        <tr style="border:none !important;">
+                            <td style="padding-top:6px; font-weight:bold; border:none !important;">
+                            Date:
+                        </td>
+                            <td style="text-align:center; direction:rtl; font-weight:bold; border:none !important;">
+                                <t t-if="o and 'date_order' in o._fields">
+                                    <span t-field="o.date_order" t-options="{'widget': 'date'}"/>
+                                </t>
+                                <t t-elif="o and 'invoice_date' in o._fields">
+                                    <span t-field="o.invoice_date" t-options="{'widget': 'date'}"/>
+                                </t>
+                                <t t-elif="o and 'date' in o._fields">
+                                    <span t-field="o.date" t-options="{'widget': 'date'}"/>
+                                </t>
+                                <t t-else="">
+                                    <span/>
+                                </t>
+                            </td>
+                            <td style="padding-top:6px; text-align:right; direction:rtl; font-weight:bold; border:none !important;">
+                                <span>
+                                التـــاريخ :
+                            </span>
+                            </td>
+                        </tr>
+                        <tr t-if="o and 'validity_date' in o._fields" style="border:none !important;">
+                            <td style="font-weight:bold; border:none !important;">
+                            Offer Validity:
+                        </td>
+                            <td style="text-align:center; direction:rtl; font-weight:bold; border:none !important;">
+                                <span t-esc="(o and o.validity_date and o.validity_date) or ''"/>
+                            </td>
+                            <td style="text-align:right; direction:rtl; font-weight:bold; border:none !important;">
+                                <span>
+                                صالح لغاية :
+                            </span>
+                            </td>
+                        </tr>
+                        <tr t-if="o and 'x_studio_sales_person' in o._fields" style="border:none !important;">
+                            <td style="font-weight:bold; border:none !important;">
+                            Sales Person:
+                            </td>
+                            <td style="text-align:center; direction:rtl; font-weight:bold; border:none !important;">
+                                <span t-esc="(o.x_studio_sales_person_1 and o.x_studio_sales_person_1.name) or ''"/>
+                            </td>
+                            <td style="text-align:right; direction:rtl; font-weight:bold; border:none !important;">
+                                <span>البـــائــع :</span>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <!-- عنوان Quotation / عرض سعر -->
+        <div class="ss-line"/>
+        <table class="dd-line" style="width:100%; font-weight:bold; font-size:16px; border:none !important; ">
+    <tr>
+        <!-- العمود الأيسر: عنوان إنجليزي -->
+        <td>
+            <t t-if="is_proforma">
+                Pro-Forma Invoice
+            </t>
+            <t t-else="">
+                <t t-if="o and o._name == 'sale.order'">
+                    <t t-if="o.state in ('draft', 'sent')">
+                        Quotation
+                    </t>
+                    <t t-else="">
+                        Sales Order
+                    </t>
+                </t>
+
+                <t t-if="o and o._name == 'account.move'">
+                    <t t-if="o.move_type in ('out_invoice', 'out_refund')">
+                        Invoice
+                    </t>
+                    <t t-else="">
+                        <t t-if="o.move_type in ('in_invoice', 'in_refund')">
+                            Bill
+                        </t>
+                        <t t-else="">
+                            Journal Entry
+                        </t>
+                    </t>
+                </t>
+
+                <t t-if="o and o._name == 'purchase.order'">
+                    <t t-if="o.state in ('draft', 'sent')">
+                        Request for Quotation
+                    </t>
+                    <t t-else="">
+                        Purchase Order
+                    </t>
+                </t>
+
+                <t t-if="o and o._name == 'stock.picking'">
+                    <t t-if="o.picking_type_code == 'outgoing'">
+                        Delivery note
+                    </t>
+                    <t t-else="">
+                        <t t-if="o.picking_type_code == 'incoming'">
+                            Receipt
+                        </t>
+                        <t t-else="">
+                            Transfer
+                        </t>
+                    </t>
+                </t>
+
+                <t t-if="o and o._name not in ('sale.order', 'account.move', 'purchase.order', 'stock.picking')">
+                    <span t-esc="o._description or ''"/>
+                </t>
+            </t>
+        </td>
+
+        <!-- العمود الأوسط: رقم المستند -->
+        <td style="text-align:center;">
+            <span t-esc="o and o.name or ''"/>
+        </td>
+
+        <!-- العمود الأيمن: عنوان عربي -->
+        <td style="text-align:right; direction:rtl;">
+            <t t-if="is_proforma">
+                فاتورة اولية
+            </t>
+            <t t-else="">
+                <t t-if="o and o._name == 'sale.order'">
+                    <t t-if="o.state in ('draft', 'sent')">
+                        عرض سعر
+                    </t>
+                    <t t-else="">
+                        امر بيع
+                    </t>
+                </t>
+
+                <t t-if="o and o._name == 'account.move'">
+                    <t t-if="o.move_type in ('out_invoice', 'out_refund')">
+                        فاتورة
+                    </t>
+                    <t t-else="">
+                        <t t-if="o.move_type in ('in_invoice', 'in_refund')">
+                            فاتورة
+                        </t>
+                        <t t-else="">
+                            دفتر اليومية
+                        </t>
+                    </t>
+                </t>
+
+                <t t-if="o and o._name == 'purchase.order'">
+                    <t t-if="o.state in ('draft', 'sent')">
+                        طلب شراء
+                    </t>
+                    <t t-else="">
+                        أمر شراء
+                    </t>
+                </t>
+
+                <t t-if="o and o._name == 'stock.picking'">
+                    <t t-if="o.picking_type_code == 'outgoing'">
+                        طلب توصيل
+                    </t>
+                    <t t-else="">
+                        <t t-if="o.picking_type_code == 'incoming'">
+                            إيصال
+                        </t>
+                        <t t-else="">
+                            تحويل
+                        </t>
+                    </t>
+                </t>
+
+                <t t-if="o and o._name not in ('sale.order', 'account.move', 'purchase.order', 'stock.picking')">
+                    <span t-esc="o._description or ''"/>
+                </t>
+            </t>
+        </td>
+    </tr>
+</table>
+ <div class="ss-line "/>
+  </t>
+ </div>
+  <!-- ============ End-customer  ============ -->
+        <!--    <div class="d-flex justify-content-between align-items-center mb-2">-->
+        <!--        <img t-if="company.logo" class="o_company_logo_small" t-att-src="image_data_uri(company.logo)" alt="Logo"/>-->
+        <!--        <div t-if="company.report_header" t-field="company.report_header" class="o_company_tagline mw-50 fw-bold">Company tagline</div>-->
+        <!--    </div>-->
+        <!--    <div class="row">-->
+        <!--        <div class="col-6" name="company_address">-->
+        <!--            <ul class="list-unstyled" name="company_address_list">-->
+        <!--                <li t-if="company.is_company_details_empty"><span t-field="company.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}">-->
+        <!--                    <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 w-100 opacity-75 text-muted text-center">-->
+        <!--                        <strong>Company address block</strong>-->
+        <!--                        <div>Contains the company address.</div>-->
+        <!--                    </div>-->
+        <!--                </span></li>-->
+        <!--                <li t-else="">-->
+        <!--                    <span t-field="company.company_details">-->
+        <!--                        <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 w-100 opacity-75 text-muted text-center">-->
+        <!--                            <strong>Company details block</strong>-->
+        <!--                            <div>Contains the company details.</div>-->
+        <!--                        </div>-->
+        <!--                    </span>-->
+        <!--                </li>-->
+        <!--                <li t-if="not forced_vat"/>-->
+        <!--                <li t-else="">-->
+        <!--                    <t t-esc="company.country_id.vat_label or 'Tax ID'">Tax ID</t>:-->
+        <!--                    <span t-esc="forced_vat">US12345671</span>-->
+        <!--                </li>-->
+        <!--            </ul>-->
+        <!--        </div>-->
+        <!--    </div>-->
+        <!--</div>-->
+        <!-- ============ start- BACKGROUND & ARTICLE CONTAINER ============ -->
+  <t t-set="layout_background_url" t-value="'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else                 '/base/static/img/demo_logo_report.png' if company.layout_background == 'Demo logo' else ''"/>
+    <div t-attf-class="article o_report_layout_standard o_table_standard o_company_#{company.id}_layout o_snail_mail {{'o_report_layout_background' if company.layout_background != 'Blank' else ''}}" t-attf-style="{{ 'background-image: url(%s); border:none !important;' % layout_background_url if layout_background_url else 'border:none !important;' }}" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+        <t t-out="0"/>
+    </div>
+         <!-- ================== FOOTER ================== -->
+    <div t-attf-class="footer o_company_#{company.id}_layout {{report_type != 'pdf' and 'mt-auto'}}">
+        <style>
+        .o_footer_content_stub {
+            display: none;
+        }
+        </style>
+        <div class="o_footer_content o_footer_content_stub"/>
+        <!-- الفوتر المخصص -->
+        <div style="width:100%; text-align:center; font-size:10px;  margin-top:4px;">
+            <div t-if="report_type == 'pdf'" style="margin-bottom:3px;">
+                <span style="border:1px solid ; border-radius:6px; padding:2px 10px; font-weight:bold; display:inline-block;">
+                Page 
+                    
+                    
+                    
+                    <span class="page"/> / 
+                    
+                    
+                    
+                    <span class="topage"/>الصفحة  
+            </span>
+            </div>
+            <div t-if="report_type == 'pdf'" style="border-top:2px solid #b58b46; margin:3px 0 4px 0;"/>
+            <div style="line-height:1.4; color:#b58b46; font-size:14px;">
+                <span>C.R. </span>
+                <span t-esc="(o and res_company.company_registry and res_company.company_registry ) or ''"/>
+                <span> - Kingdom of Saudi Arabia - </span>
+                <span t-esc="(o and res_company.city and res_company.city ) or ''"/>
+                <span> - </span>
+                <span> King Abdullah Road </span>
+                <!--<span t-esc="(o and res_company.street and res_company.street ) or ''"/>-->
+                <span> - </span>
+                <span t-esc="(o and company.phone and company.phone ) or ''"/>
+                <span> - </span>
+                <span t-esc="(o and company.email and company.email ) or ''"/>
+                <br/>
+                <span t-esc="(o and company.website and company.website ) or ''"/>
+            </div>
+        </div>
+    </div>
+    </t>
