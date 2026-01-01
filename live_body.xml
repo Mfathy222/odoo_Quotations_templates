@@ -1,5 +1,4 @@
-<!-- qutation & sale qutation & proforma live_body  -->
-
+<!-- ====================================== live body Quotation,sale order, Pro-Forma =================================================== -->
 <t t-name="sale.report_saleorder_document">
     <t t-call="web.external_layout">
         <!-- ============ همهم جدا ============ -->
@@ -64,9 +63,6 @@
         width: 100%;
         border-collapse: collapse;
         font-size: 12px;
-        
-                        
-                        <!--margin-bottom: 8px;-->
         border-collapse:separate;  
         border-spacing:0 3px;   
     }
@@ -91,17 +87,12 @@
     .ss-header-value {
         background-color:#F2EADC;
         text-align:center;
-        
-                        
-                        <!--max-widith:5px;-->
-                        <!--padding:3px 4px;-->
+
     }
     .ss-value-cell {
         background-color:#F2EADC;
         text-align:center;
         
-                        
-                        <!--padding:3px 4px;-->
     }
    
 
@@ -172,7 +163,8 @@
                             <tr>
                                 <td class="ss-header-label-en">Tel</td>
                                 <td class="ss-header-value">
-                                    <span t-out="doc.partner_id.phone or doc.partner_id.mobile or ''"/>
+                                    <!--<span t-out="doc.partner_id.phone or doc.partner_id.mobile or ''"/>-->
+                                    <span t-out="doc.partner_id.phone              or (doc.partner_id._fields.get('mobile') and doc.partner_id.mobile)              or ''"/>
                                 </td>
                                 <td class="ss-header-label-ar">رقم الهاتف</td>
                                 <td class="ss-header-label-en">Tel</td>
@@ -181,18 +173,12 @@
                                 </td>
                                 <td class="ss-header-label-ar">رقم الهاتف</td>
                             </tr>
-                            <!--<tr style="">-->
-                            <!--    <td class="ss-header-label-en">Note</td>-->
-                            <!--    <td class="ss-header-value" style="width:300px;">-->
-                            <!--        <span t-esc="o.x_studio_note or ''"/>-->
-                            <!--    </td>-->
-                            <!--    <td class="ss-header-label-ar">ملاحظات</td>-->
-                            <!--</tr>-->
+                    
                             <tr>
                                 <!-- Label EN على اليسار -->
                                 <td class="ss-header-label-en">Note</td>
                                 <!-- خانة الملاحظة نفسها تمتد على وسط الجدول كله -->
-                                <td colspan="4" style="text-align:center;">
+                                <td class="ss-header-value" colspan="4" style="text-align:center;">
                                     <span t-esc="doc.x_studio_note or ''"/>
                                 </td>
                                 <!-- Label AR على اليمين -->
@@ -377,7 +363,7 @@
                 width: 100%;
                 border-collapse: collapse;
                 font-size: 12px;
-                margin-top: 10px;
+                margin-top: 15px;
             }
             .ss-items-table th,
             .ss-items-table td {
@@ -443,12 +429,6 @@
                 white-space: nowrap;
             }
             
-                        
-                        <!--.ss-total-separator td {-->
-                        <!--    border-top: 1px solid #000;-->
-                        <!--    padding-top: 3px;-->
-                        <!--    font-weight: bold;-->
-                        <!--}-->
             .ss-total-separator tr {
                 border-top: 1px solid #000 !important;
                 padding-top: 3px;
@@ -458,7 +438,6 @@
             .ss-amount-text {
                 width: 100%;
                 font-size: 12px;
-                margin-top: 3px;
                 border: none;
             }
             .ss-amount-text td {
@@ -470,16 +449,27 @@
                 text-align: center;
             }
         
+            .ss-items-table .ss-section-total-row td,
+            .ss-items-table .ss-note-row td{
+                    border-left: none !important;
+                    border-right: none !important;
+            }
+            .ss-items-table .ss-section-total-row td:first-child,
+            .ss-items-table .ss-note-row td:first-child{
+                border-left: 1px solid #180501 !important;
+            }
+            .ss-items-table .ss-section-total-row td:last-child,
+            .ss-items-table .ss-note-row td:last-child{
+                border-right: 1px solid #180501 !important;
+            }
                     
                     </style>
                     <t t-set="has_discount" t-value="any(l.discount for l in doc.order_line if not l.display_type and not l.is_downpayment)"/>
-                    <!-- جدول البنود لــ Pro-Forma -->
                     <table class="ss-items-table">
                         <thead>
                             <tr>
                                 <th class="ss-col-qty">
                                     <div>#</div>
-                                    <!--<div class="ss-head-en">Item Code</div>-->
                                 </th>
                                 <th class="ss-col-desc">
                                     <div class="ss-head-ar">الوصف</div>
@@ -523,58 +513,170 @@
                                 </th>
                             </tr>
                         </thead>
+                        
+                        <t t-set="has_discount" t-value="any(l.discount for l in doc.order_line if not l.display_type and not l.is_downpayment)"/>
+                        <t t-set="discount_lines" t-value="doc.order_line.filtered(lambda l: (not l.display_type) and (l.price_subtotal or 0.0) &lt; 0)"/>
+                        <t t-set="discount_amount" t-value="abs(sum(discount_lines.mapped('price_subtotal')) or 0.0)"/>
+
+                        <!--<tbody>-->
+                        <!--    <t t-set="row_number" t-value="0"/>-->
+                        <!--    <t t-foreach="doc.order_line" t-as="line">-->
+                        <!--        <t t-if="not line.display_type and not line.is_downpayment">-->
+                        <!--            <t t-set="row_number" t-value="row_number + 1"/>-->
+                        <!--            <tr>-->
+
+                        <!--                <td class="ss-num">-->
+                        <!--                    <span t-esc="row_number"/>-->
+                        <!--                </td>-->
+                        <!--                <td>-->
+                        <!--                    <span t-field="line.name"/>-->
+                        <!--                </td>-->
+                        <!--                <td class="ss-num">-->
+                        <!--                    <span t-field="line.product_uom_qty"/>-->
+                        <!--                </td>-->
+                        <!--                <td class="ss-num">-->
+                        <!--                    <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>-->
+                        <!--                </td>-->
+                        <!--                <td class="ss-col-discount" t-if="has_discount">-->
+                        <!--                    <span t-field="line.discount"/>-->
+                        <!--                </td>-->
+                        <!--                <td class="ss-num">-->
+                        <!--                    <span t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>-->
+                        <!--                </td>-->
+                        <!--                <td class="ss-num">-->
+                        <!--                    <span t-esc="', '.join([('%s%%' % tax.amount) for tax in line.tax_ids])"/>-->
+                        <!--                </td>-->
+                        <!--                <td class="ss-num">-->
+                        <!--                    <span t-out="line.price_total - line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>-->
+                        <!--                </td>-->
+                        <!--                <td class="ss-num">-->
+                        <!--                    <span t-field="line.price_total" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>-->
+                        <!--                </td>-->
+                        <!--            </tr>-->
+                        <!--        </t>-->
+                        <!--    </t>-->
+                        <!--</tbody>-->
+                        
                         <tbody>
-                            <!-- عدّاد الأسطر -->
-                            <t t-set="row_number" t-value="0"/>
-                            <t t-foreach="doc.order_line" t-as="line">
-                                <t t-if="not line.display_type and not line.is_downpayment">
-                                    <t t-set="row_number" t-value="row_number + 1"/>
-                                    <tr>
-                                        <!--Item Code -->
-                                        <!--<td class="ss-text-left">-->
-                                        <!--    <span t-esc="line.product_id.default_code or ''"/>-->
-                                        <!--</td>-->
-                                        <!-- رقم السطر (بدل كود المنتج) -->
-                                        <td class="ss-num">
-                                            <span t-esc="row_number"/>
-                                        </td>
-                                        <!-- Description -->
-                                        <td>
-                                            <span t-field="line.name"/>
-                                        </td>
-                                        <!-- Qty -->
-                                        <td class="ss-num">
-                                            <span t-field="line.product_uom_qty"/>
-                                        </td>
-                                        <!-- Unit Price -->
-                                        <td class="ss-num">
-                                            <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                        </td>
-                                        <td class="ss-col-discount" t-if="has_discount">
-                                            <span t-field="line.discount"/>
-                                        </td>
-                                        <!-- Taxable amount (without VAT) -->
-                                        <td class="ss-num">
-                                            <span t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                        </td>
-                                        <!-- Tax rate % -->
-                                        <td class="ss-num">
-                                            <span t-esc="', '.join([('%s%%' % tax.amount) for tax in line.tax_ids])"/>
-                                        </td>
-                                        <!-- Tax amount -->
-                                        <td class="ss-num">
-                                            <span t-out="line.price_total - line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                        </td>
-                                        <!-- Total after tax -->
-                                        <td class="ss-num">
-                                            <span t-field="line.price_total" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                        </td>
-                                    </tr>
-                                </t>
-                            </t>
-                        </tbody>
+    <t t-set="lines" t-value="doc.order_line.sorted(lambda l: (l.sequence, l.id))"/>
+    <t t-set="row_number" t-value="0"/>
+
+    <t t-foreach="lines" t-as="line">
+
+        <!-- SECTION (يعرض إجمالي السيكشن مكان السيكشن) -->
+        <t t-if="line.display_type == 'line_section'">
+            <t t-set="next_section" t-value="(lines.filtered(lambda x: x.display_type == 'line_section' and (x.sequence &gt; line.sequence or (x.sequence == line.sequence and x.id &gt; line.id))))[:1]"/>
+
+            <t t-set="section_lines" t-value="lines.filtered(lambda x: (not x.display_type) and (not x.is_downpayment) and (x.sequence &gt; line.sequence) and (not next_section or x.sequence &lt; next_section.sequence) and (x.id not in discount_lines.ids))"/>
+
+            <!--<t t-set="section_taxable" t-value="sum(section_lines.mapped('price_subtotal')) or 0.0"/>-->
+            <t t-set="section_total" t-value="sum(section_lines.mapped('price_total')) or 0.0"/>
+            <!--<t t-set="section_tax" t-value="(section_total - section_taxable) or 0.0"/>-->
+
+            <tr class="ss-section-total-row">
+                <!-- # -->
+                <td class="ss-num"/>
+
+                <!-- Description (اسم السيكشن) -->
+                <td style="font-weight:bold;">
+                    <span t-esc="line.name"/>
+                </td>
+
+                <!-- Qty -->
+                <td class="ss-num"/>
+
+                <!-- U.Price -->
+                <td class="ss-num"/>
+
+                <!-- Disc.% (لو ظاهر) -->
+                <td class="ss-col-discount" t-if="has_discount"/>
+
+                <!-- Taxable amount -->
+                <td class="ss-num" style="font-weight:bold;">
+                    <!--<span t-out="section_taxable" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>-->
+                </td>
+
+                <!-- Tax rate % -->
+                <td class="ss-num"/>
+
+                <!-- Tax amount -->
+                <td class="ss-num" style="font-weight:bold;">
+                    <!--<span t-out="section_tax" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>-->
+                </td>
+
+                <!-- Total after Tax -->
+                <td class="ss-num" style="font-weight:bold;">
+                    <span t-out="section_total" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                </td>
+            </tr>
+        </t>
+
+        <!-- NOTE -->
+        <t t-elif="line.display_type == 'line_note'">
+            <tr class="ss-note-row">
+                <td class="ss-num"/>
+                <td style="font-weight:bold;">
+                    <span t-esc="line.name"/>
+                </td>
+                <td class="ss-num"/>
+                <td class="ss-num"/>
+                <td class="ss-col-discount" t-if="has_discount"/>
+                <td class="ss-num"/>
+                <td class="ss-num"/>
+                <td class="ss-num"/>
+                <td class="ss-num"/>
+            </tr>
+        </t>
+
+        <!-- NORMAL PRODUCT LINE -->
+        <t t-elif="not line.display_type and not line.is_downpayment and line.id not in discount_lines.ids">
+            <t t-set="row_number" t-value="row_number + 1"/>
+            <tr>
+                <!-- رقم السطر -->
+                <td class="ss-num"><span t-esc="row_number"/></td>
+
+                <!-- Description -->
+                <td><span t-field="line.name"/></td>
+
+                <!-- Qty -->
+                <td class="ss-num"><span t-field="line.product_uom_qty"/></td>
+
+                <!-- Unit Price -->
+                <td class="ss-num">
+                    <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                </td>
+
+                <!-- Discount -->
+                <td class="ss-col-discount" t-if="has_discount">
+                    <span t-field="line.discount"/>
+                </td>
+
+                <!-- Taxable amount -->
+                <td class="ss-num">
+                    <span t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                </td>
+
+                <!-- Tax rate % -->
+                <td class="ss-num">
+                    <span t-esc="', '.join([('%s%%' % tax.amount) for tax in line.tax_ids])"/>
+                </td>
+
+                <!-- Tax amount -->
+                <td class="ss-num">
+                    <span t-out="line.price_total - line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                </td>
+
+                <!-- Total after tax -->
+                <td class="ss-num">
+                    <span t-field="line.price_total" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                </td>
+            </tr>
+        </t>
+
+    </t>
+</tbody>
+
                     </table>
-                    <!-- بلوك الإجماليات تحت الجدول (Pro-Forma) -->
                     <table class="ss-total-table">
                         <tbody style="border: none !important;">
                             <t t-set="pre_discount_untaxed" t-value="sum([(l.product_uom_qty or 0.0) * (l.price_unit or 0.0) for l in doc.order_line if not l.display_type and (l.price_subtotal or 0.0)])"/>
@@ -588,14 +690,14 @@
                             </tr>
                             <tr t-if="discount_amount and abs(discount_amount)">
                                 <td class="ss-total-label-en">
-                    Discount 
-                </td>
+                                Discount 
+                            </td>
                                 <td class="ss-total-value">
                                     <span t-esc="discount_amount" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                 </td>
                                 <td class="ss-total-label-ar">
                 الخصم 
-                </td>
+                            </td>
                             </tr>
                             <tr>
                                 <td class="ss-total-label-en">Total VAT amount</td>
@@ -611,7 +713,7 @@
                                 </td>
                                 <td class="ss-total-label-ar">الإجمالي شامل ضريبة القيمة المضافة</td>
                             </tr>
-                            <tr>
+                            <tr t-if="advanced and float(advanced) != 0.00">
                                 <td class="ss-total-label-en">Total Advanced Payments</td>
                                 <td class="ss-total-value">
                                     <span t-out="advanced" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
@@ -623,18 +725,28 @@
                                 <td class="ss-total-value">
                                     <span t-out="total_due" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                 </td>
-                                <td class="ss-total-label-ar">إجمالي المبلغ المستحق</td>
+                                <td class="ss-total-label-ar">
+اجمالي المبلغ المستحق
+                                </td>
                             </tr>
                         </tbody>
                     </table>
-                    <!--<table class="ss-amount-text">-->
-                    <!--    <tr>-->
-                    <!--        <td>-->
-                    <!--            Only-->
-                    <!--            <span t-out="doc.currency_id.amount_to_text(total_due)"/>-->
-                    <!--        </td>-->
-                    <!--    </tr>-->
-                    <!--</table>-->
+                      
+                    <table class="ss-amount-text" style="font-size:13px; border: none !important;">
+                        <tbody style="border: none !important;">
+                        <tr style="border: none !important;">
+                            <td style="border: none !important;">
+                                 ( Only
+                                <span t-out="doc.currency_id.amount_to_text(total_due)"/> )
+                            </td>
+                             <td style="border: none !important; text-align:right;">
+                        (  فقط  <span t-out="doc.currency_id.with_context(lang='ar_001').amount_to_text(total_due)"/> )
+                        </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                <br/>
+                <br/>
                 </t>
                 <!-- ================================================================= -->
                 <!--      2) Quotation / Sales Order  (الوصف + الصورة + الخصم)         -->
@@ -746,8 +858,29 @@
                 padding: 3px 4px;
                 border-top: 1px solid #000;
             }
+            
+            .ss-section-total-row td{
+                <!--background:#f3f3f3;-->
+                border-left: none !important;
+                border-right: none !important;
+                font-weight: bold;
+                padding: 8px 6px;
+            }
+            
+            .ss-note-row td{
+                <!--background:#f3f3f3;-->
+                border-left: none !important;
+                border-right: none !important;
+                font-weight: bold;
+                padding: 8px 6px;
+            }
+
         </style>
                     <t t-set="has_discount" t-value="any(l.discount for l in doc.order_line if not l.display_type and not l.is_downpayment)"/>
+<t t-set="discount_lines" t-value="doc.order_line.filtered(lambda l: (not l.display_type) and (l.price_subtotal or 0.0) &lt; 0)"/>
+
+<t t-set="discount_amount" t-value="abs(sum(discount_lines.mapped('price_subtotal')) or 0.0)"/>
+
                     <table class="ss-lines-table" style="padding-top:10px !important">
                         <thead>
                             <tr style="background-color:#B3AEA6;">
@@ -755,7 +888,6 @@
                                     <div class="ss-header-ar">
                         #
                         </div>
-                                    <!--<div class="ss-header-en"></div>-->
                                 </th>
                                 <th class="ss-col-desc">
                                     <div class="ss-header-ar">الوصف</div>
@@ -783,41 +915,127 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <t t-set="row_number" t-value="0"/>
-                            <t t-foreach="doc.order_line" t-as="line">
-                                <t t-if="not line.display_type and not line.is_downpayment">
-                                    <!-- زوّد رقم السطر -->
-                                    <t t-set="row_number" t-value="row_number + 1"/>
-                                    <tr>
-                                        <td class="ss-col-sq">
-                                            <span t-esc="row_number"/>
-                                        </td>
-                                        <td class="ss-col-desc">
-                                            <div class="ss-desc-ar" t-esc="line.name"/>
-                                        </td>
-                                        <td class="ss-col-qty">
-                                            <span t-field="line.product_uom_qty"/>
-                                        </td>
-                                        <td class="ss-col-price">
-                                            <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/>
-                                        </td>
-                                        <td class="ss-col-discount" t-if="has_discount">
-                                            <span t-field="line.discount"/>
-                                        </td>
-                                        <td class="ss-col-total">
-                                            <span t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/>
-                                        </td>
-                                        <td class="ss-col-image ss-img-cell">
-                                            <img t-if="line.product_id.image_1920" t-att-src="image_data_uri(line.product_id.image_1920)"/>
-                                        </td>
-                                    </tr>
-                                </t>
-                            </t>
-                        </tbody>
+                        
+<!--                        <tbody>-->
+<!--    <t t-set="row_number" t-value="0"/>-->
+<!--    <t t-foreach="doc.order_line" t-as="line">-->
+
+<!--        <t t-if="line.display_type == 'line_section'">-->
+<!--            <tr class="ss-section-row">-->
+<!--                <td colspan="7" style=" font-style:bold; padding:8px;">-->
+<!--                    <span t-esc="line.name"/>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        </t>-->
+
+<!--        <t t-elif="line.display_type == 'line_note'">-->
+<!--            <tr class="ss-note-row">-->
+<!--                <td colspan="7" style="font-style:bold; padding:8px;">-->
+<!--                    <span t-esc="line.name"/>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        </t>-->
+
+<!--             <t t-elif="not line.display_type and not line.is_downpayment and line.id not in discount_lines.ids">-->
+<!--            <t t-set="row_number" t-value="row_number + 1"/>-->
+<!--            <tr>-->
+<!--                <td class="ss-col-sq">-->
+<!--                    <span t-esc="row_number"/>-->
+<!--                </td>-->
+<!--                <td class="ss-col-desc">-->
+<!--                    <div class="ss-desc-ar" t-esc="line.name"/>-->
+<!--                </td>-->
+<!--                <td class="ss-col-qty">-->
+<!--                    <span t-field="line.product_uom_qty"/>-->
+<!--                </td>-->
+<!--                <td class="ss-col-price">-->
+                    
+<!--                    <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/>-->
+<!--                </td>-->
+
+<!--                <td class="ss-col-discount" t-if="has_discount">-->
+<!--                    <span t-field="line.discount"/>-->
+<!--                </td>-->
+             
+
+<!--                <td class="ss-col-total">-->
+<!--                    <span t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/>-->
+<!--                </td>-->
+<!--                <td class="ss-col-image ss-img-cell">-->
+<!--                    <img t-if="line.product_id.image_1920" t-att-src="image_data_uri(line.product_id.image_1920)"/>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        </t>-->
+
+<!--    </t>-->
+<!--</tbody>-->
+
+<tbody>
+    <t t-set="lines" t-value="doc.order_line.sorted(lambda l: (l.sequence, l.id))"/>
+    <t t-set="row_number" t-value="0"/>
+    <t t-foreach="lines" t-as="line">
+
+        <t t-if="line.display_type == 'line_section'">
+            <t t-set="next_section" t-value="(lines.filtered(lambda x: x.display_type == 'line_section' and (x.sequence &gt; line.sequence or (x.sequence == line.sequence and x.id &gt; line.id))))[:1]"/>
+            <t t-set="section_lines" t-value="lines.filtered(lambda x: (not x.display_type) and (not x.is_downpayment) and (x.sequence &gt; line.sequence) and (not next_section or x.sequence &lt; next_section.sequence) and (x.id not in discount_lines.ids))"/>
+            <t t-set="section_total" t-value="sum(section_lines.mapped('price_subtotal')) or 0.0"/>
+            <tr class="ss-section-total-row">
+                <td class="ss-col-sq"/>
+                <td class="ss-col-desc" style="font-weight:bold;">
+                    <span t-esc="line.name"/>
+                </td>
+                <td class="ss-col-qty"/>
+                <td class="ss-col-price"/>
+                <td class="ss-col-discount" t-if="has_discount"/>
+                <td class="ss-col-total" style="font-weight:bold;">
+                    <span t-out="section_total" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                </td>
+                <td class="ss-col-image"/>
+            </tr>
+        </t>
+
+        <t t-elif="line.display_type == 'line_note'">
+            <tr class="ss-note-row">
+                <td class="ss-col-sq"/>
+                <td class="ss-col-desc" style="font-style:italic; font-weight:bold;">
+                    <span t-esc="line.name"/>
+                </td>
+                <td class="ss-col-qty"/>
+                <td class="ss-col-price"/>
+                <td class="ss-col-discount" t-if="has_discount"/>
+                <td class="ss-col-total"/>
+                <td class="ss-col-image"/>
+            </tr>
+        </t>
+        <t t-elif="not line.display_type and not line.is_downpayment and line.id not in discount_lines.ids">
+            <t t-set="row_number" t-value="row_number + 1"/>
+            <tr>
+                <td class="ss-col-sq"><span t-esc="row_number"/></td>
+                <td class="ss-col-desc"><div class="ss-desc-ar" t-esc="line.name"/></td>
+                <td class="ss-col-qty"><span t-field="line.product_uom_qty"/></td>
+                <td class="ss-col-price">
+                    <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/>
+                </td>
+                <td class="ss-col-discount" t-if="has_discount"><span t-field="line.discount"/></td>
+                <td class="ss-col-total">
+                    <span t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': line.currency_id}"/>
+                </td>
+                <td class="ss-col-image ss-img-cell">
+                    <img t-if="line.product_id.image_1920" t-att-src="image_data_uri(line.product_id.image_1920)"/>
+                </td>
+            </tr>
+        </t>
+    </t>
+</tbody>
+
+
+
+
+
+
                     </table>
                 </t>
-                <div class="oe_structure pt-5"/>
+                <div class="oe_structure"/>
                 <!-- ============ end-body ============ -->
                 <!-- Is there a discount on at least one line? -->
                 <t t-set="lines_to_report" t-value="doc._get_order_lines_to_report()"/>
@@ -858,12 +1076,13 @@
                     <a t-att-href="portal_url">Connect your software</a> with 
                     
                     <t t-out="doc.company_id.name"/> to create quotes automatically.
-            
+           
                 
                 </div>
             </div>
             <!-- ============ start-Payment Advance as Per stages direct by Our Bank Account ============ -->
-            <t t-if="is_proforma">
+                      <t t-if="is_proforma">
+                 <br/>
                 <table style="width:100%; margin-top:50px; border-collapse:collapse; font-size:12px; border:1px solid #000 !important; ">
                     <tr>
                         <td style="width:15%; background-color:#E5E5E5; color:#b00000; font-weight:bold; text-align:center; border:1px solid #000 !important;">
@@ -1009,6 +1228,9 @@
                                 <td class="ss-no-border-td" style="width:35%; vertical-align:top; padding-left:4px; font-size:12px; border:none !important;">
                                     <t t-set="pre_discount_untaxed" t-value="sum([(l.product_uom_qty or 0.0) * (l.price_unit or 0.0) for l in doc.order_line if not l.display_type and (l.price_subtotal or 0.0)])"/>
                                     <t t-set="discount_amount" t-value="(pre_discount_untaxed or 0.0) - (doc.amount_untaxed or 0.0)"/>
+                                    <t t-set="discount_lines" t-value="doc.order_line.filtered(lambda l: (not l.display_type) and (not l.is_downpayment) and ((l.price_subtotal or 0.0) &lt; 0))"/>
+                                    <t t-set="discount_amount" t-value="abs(sum(discount_lines.mapped('price_subtotal')) or 0.0)"/>
+
                                     <div style="border:2px solid #000; border-radius:10px; padding:10px 6px; height:100px;">
                                         <table class="ss-no-border-td" style="width:100%; border-collapse:collapse; font-size:12px;">
                                             <tr>
@@ -1020,18 +1242,26 @@
                                             الإجمالي :
                                         </td>
                                             </tr>
-                                            <!--<tr t-if="discount_amount and abs(discount_amount) &gt; 0.00001">-->
-                                            <tr t-if="discount_amount and abs(discount_amount)">
-                                                <td style="white-space:nowrap; padding-top:4px; border:none !important;">
-                                             Discount :
-                                            </td>
-                                                <td style="text-align:center; padding-top:4px; border:none !important;">
-                                                    <span t-esc="discount_amount" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                                </td>
-                                                <td style="text-align:right; direction:rtl; white-space:nowrap; padding-top:4px; border:none !important;">
-                                             الخصم :
-                                            </td>
-                                            </tr>
+                                           
+                                            <!--<tr t-if="discount_amount and abs(discount_amount)">-->
+                                            <!--    <td style="white-space:nowrap; padding-top:4px; border:none !important;">-->
+                                            <!-- Discount :-->
+                                            <!--</td>-->
+                                            <!--    <td style="text-align:center; padding-top:4px; border:none !important;">-->
+                                            <!--        <span t-esc="discount_amount" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>-->
+                                            <!--    </td>-->
+                                            <!--    <td style="text-align:right; direction:rtl; white-space:nowrap; padding-top:4px; border:none !important;">-->
+                                            <!-- الخصم :-->
+                                            <!--</td>-->
+                                            <!--</tr>-->
+                                            <tr t-if="discount_amount">
+    <td style="white-space:nowrap; padding-top:4px; border:none !important;">Discount :</td>
+    <td style="text-align:center; padding-top:4px; border:none !important;">
+        <span t-out="discount_amount" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+    </td>
+    <td style="text-align:right; direction:rtl; white-space:nowrap; padding-top:4px; border:none !important;">الخصم :</td>
+</tr>
+
                                             <tr>
                                                 <td style="white-space:nowrap; padding-top:4px; border:none !important;">
                                                 VAT 15% :
@@ -1059,54 +1289,9 @@
                                 </td>
                             </tr>
                         </table>
-                        <!--<table style="width:100%; margin-top:4px; border-collapse:collapse; font-size:12px; border:1px solid #000 !important; ">-->
-                        <!--    <tr>-->
-                        <!--        <td style="width:15%; background-color:#E5E5E5; color:#b00000; font-weight:bold; text-align:center; border:1px solid #000 !important;">-->
-                        <!--            Bank Name-->
-                        <!--        </td>-->
-                        <!--        <td style="width:35%; text-align:center; border:1px solid #000; padding:4px 6px; border:1px solid #000 !important;">-->
-                        <!--            <div>بنك الرياض</div>-->
-                        <!--            <div>AL Riyad Bank</div>-->
-                        <!--        </td>-->
-                        <!--        <td style="width:35%; text-align:center; border:1px solid #000; padding:4px 6px; border:1px solid #000 !important;">-->
-                        <!--            <div>البنك الأهلي السعودي</div>-->
-                        <!--            <div>National Commercial Bank</div>-->
-                        <!--        </td>-->
-                        <!--        <td style="width:15%; background-color:#E5E5E5; color:#b00000; font-weight:bold; text-align:center; direction:rtl; border:1px solid #000 !important;">-->
-                        <!--           اسم البنك-->
-                        <!--        </td>-->
-                        <!--    </tr>-->
-                        <!--    <tr>-->
-                        <!--        <td style="background-color:#E5E5E5; color:#b00000; font-weight:bold; text-align:center; border:1px solid #000 !important;">-->
-                        <!--            Account No-->
-                        <!--        </td>-->
-                        <!--        <td style="text-align:center; border:1px solid #000; padding:4px 6px; border:1px solid #000 !important;">-->
-                        <!--            1702260499940-->
-                        <!--        </td>-->
-                        <!--        <td style="text-align:center; border:1px solid #000; padding:4px 6px; border:1px solid #000 !important;">-->
-                        <!--            011447205006202-->
-                        <!--        </td>-->
-                        <!--        <td style="background-color:#E5E5E5; color:#b00000; font-weight:bold; text-align:center; direction:rtl; border:1px solid #000 !important;">-->
-                        <!--            رقم الحساب-->
-                        <!--        </td>-->
-                        <!--    </tr>-->
-                        <!--    <tr>-->
-                        <!--        <td style="background-color:#E5E5E5; color:#b00000; font-weight:bold; text-align:center; border:1px solid #000 !important;">-->
-                        <!--            IBAN-->
-                        <!--        </td>-->
-                        <!--        <td style="text-align:center; border:1px solid #000; padding:4px 6px border:1px solid #000 !important;">-->
-                        <!--            SA46 2000 000 17022 6049 9940-->
-                        <!--        </td>-->
-                        <!--        <td style="text-align:center; border:1px solid #000; padding:4px 6px; border:1px solid #000 !important;">-->
-                        <!--            SA88 1000 0 011 4472 0500 6202-->
-                        <!--        </td>-->
-                        <!--        <td style="background-color:#E5E5E5; color:#b00000; font-weight:bold; text-align:center; direction:rtl; border:1px solid #000 !important;">-->
-                        <!--          الايبان                   -->
-                        <!--        </td>-->
-                        <!--    </tr>-->
-                        <!--</table>-->
+                       
                     </div>
-                    <table style="width:100%; margin-top:4px; border-collapse:collapse; font-size:12px; border:1px solid #000 !important; ">
+                    <table style="width:100%; border-collapse:collapse; font-size:12px; border:1px solid #000 !important; ">
                         <tr>
                             <td style="width:15%; background-color:#E5E5E5; color:#b00000; font-weight:bold; text-align:center; border:1px solid #000 !important;">
                                 Bank Name
