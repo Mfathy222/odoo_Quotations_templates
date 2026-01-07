@@ -490,6 +490,11 @@
         .o_footer_content_stub {
             display: none;
         }
+
+<!-- ======================== remove zatca time and date from footer========================================= -->
+        .footer span.text-muted.text-center{
+        display:none !important;
+        }
         </style>
         <div class="o_footer_content o_footer_content_stub"/>
         <!-- الفوتر المخصص -->
