@@ -37,7 +37,7 @@
                 <!--    <span t-field="o.name">WH/OUT/0001</span>-->
                 <!--</h2>-->
                 <div class="oe_structure"/>
-                <div id="informations" class="report-wrapping-flexbox clearfix row mb-4">
+                <div id="informations" class="report-wrapping-flexbox clearfix row">
                     <div t-if="o.origin" class="col col-3 mw-100 mb-2" name="div_origin">
                         <!--<strong>Order</strong>-->
                         <!--<div t-field="o.origin" class="m-0">S0001</div>-->
@@ -48,7 +48,8 @@
                     <div t-if="o.state" class="col col-3 mw-100 mb-2" name="div_sched_date">
                         <!--<strong>Shipping Date</strong>-->
                         <!--<div t-if="o.state == 'done'" t-field="o.date_done" class="m-0"/>-->
-                        <!--<div t-else="" t-field="o.scheduled_date" class="m-0"/>--></div>
+                        <!--<div t-else="" t-field="o.scheduled_date" class="m-0"/>-->
+                        </div>
                     <div t-if="o.user_id" class="col-auto" name="div_operator">
                         <strong>Operator:</strong>
                         <p t-field="o.user_id">Mitchel Admin</p>
@@ -106,19 +107,6 @@
                 border:none !important;
                 outline:none !important;
                 }
-                
-                
-                
-                .ss-avoid-break{
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-  -webkit-column-break-inside: avoid !important;
-}
-.ss-avoid-break table{
-  page-break-inside: avoid !important;
-  break-inside: avoid !important;
-}
-
                 </style>
                 <!-- بلوك بيانات العميل -->
                 <table class="ss-main-top-table" style="width:100%; border-style:none !important;">
@@ -256,11 +244,11 @@
                                     <span t-field="move.product_id.display_name"/>
                                      <!--<span t-esc="line.product_id.display_name"/>-->
                                      <br/>
-                                            <span t-esc="move.product_id.description_sale"/>
+                                    <span t-esc="move.product_id.description_sale"/>
                                 </div>
-                                <div t-if="move.description_picking and move.description_picking != move.product_id.display_name">
-                                    <span t-out="move.description_picking" t-options="{'widget': 'text'}"/>
-                                </div>
+                                <!--<div t-if="move.description_picking and move.description_picking != move.product_id.display_name">-->
+                                <!--    <span t-out="move.description_picking" t-options="{'widget': 'text'}"/>-->
+                                <!--</div>-->
                             </td>
                             <!-- Quantity (حسب حالة التحويل) -->
                             <td class="dn-cell-qty">
@@ -278,6 +266,10 @@
                             </td>
                         </tr>
                     </tbody>
+                    
+                     
+
+                        
                 </table>
                 <!-- باقى الكود الأصلى (الـ backorders + التوقيع) بدون أى تغيير -->
                 <div class="oe_structure"/>
@@ -302,15 +294,19 @@
                         <tbody>
                             <tr t-foreach="backorders.mapped('move_ids').filtered(lambda x: x.product_uom_qty)" t-as="bo_line">
                                 <td class="w-auto">
-                                    <span t-field="bo_line.product_id">Office Chair</span>
+                                    <span t-field="bo_line.product_id" style="white-space: pre-line;">Office Chair</span>
+                                    <br/>
+                                    <span t-field="bo_line.product_id.description_sale" class="small"/>
                                     <p t-if="bo_line.description_picking and bo_line.description_picking != bo_line.product_id.name and bo_line.description_picking != bo_line.product_id.display_name">
                                         <span t-out="bo_line.description_picking" t-options="{'widget': 'text'}">Description on transfer</span>
+                                        <br/>
+                                        <span t-field="bo_line.product_id.description_sale" class="small"/>
                                     </p>
                                 </td>
                                 <td/>
-                                <td class="text-end w-auto">
+                                <td class="text-center w-auto ps-5">
                                     <span t-out="format_number(bo_line.product_uom_qty)">3.00</span>
-                                    <span t-field="bo_line.product_uom" groups="uom.group_uom">units</span>
+                                    <!--<span t-field="bo_line.product_uom" groups="uom.group_uom">units</span>-->
                                 </td>
                             </tr>
                         </tbody>
@@ -329,8 +325,7 @@
                     </div>
                 </div>
                 
-                
-                
+                 
 <!--===========================Delivery note with page-break=========================================-->
                 <style>
   .ss-avoid-break{
@@ -411,7 +406,11 @@
   </table>
 
   <div style="height:18px;"/>
-
+  
+  
+                            <t t-if="o and o._name == 'stock.picking'">
+                                <t t-if="o.picking_type_code == 'outgoing'">
+                                    
   <table style="width:100%; border-collapse:collapse; border-style:none !important;">
     <tbody>
       <tr>
@@ -426,14 +425,24 @@
       </tr>
     </tbody>
   </table>
+                                </t>
+                                <t t-else="">
+                                    <t t-if="o.picking_type_code == 'incoming'">
+                            
+                                    </t>
+                                    <t t-else="">
+                            
+                                    </t>
+                                </t>
+                            </t>
 
-</div>
+</div>               
 
             </div>
-            <br/>
+         
             
             
-<!--<table style="width:100%;">-->
+<!--            <table style="width:100%;">-->
 <!--             <tr style=" text-align:center; font-weight:bold; border:none !important;">-->
 <!--                                <td style=" border:none !important;">-->
 <!--                        <span>-->
@@ -446,8 +455,9 @@
 <!--                                </td>-->
 <!--                            </tr>-->
 <!--                            </table>-->
-<!--                            <br/><br/>-->
-<!--<table style="width:80%; border-collapse:collapse; margin:0 auto;">-->
+<!--                            <br/>-->
+<!--                            <br/>-->
+<!--                        <table style="width:80%; border-collapse:collapse; margin:0 auto;">-->
 <!--                            <tr>-->
 <!--                                <td style="width:30%; white-space:nowrap; border:none !important;">Date :</td>-->
 <!--                                <td style="text-align:center; padding-top:4px; border:none !important;"/>-->
@@ -474,8 +484,10 @@
 <!--                            </td>-->
 <!--                            </tr>-->
 <!--                        </table>-->
-<!--                        <br/><br/>-->
-<!--<table style="width:100%;  border-collapse:collapse; border-style:none !important;">-->
+<!--                        <br/>-->
+                        
+<!--            <br/>-->
+<!--           <table style="width:100%;  border-collapse:collapse; border-style:none !important;">-->
 <!--                            <tr>-->
 <!--                                <td style=" text-align:center; color:#0A27A1; font-weight:bold; border-style:none !important;">-->
 <!--                                    <span>-->
@@ -493,8 +505,6 @@
 <!--                                </td>-->
 <!--                            </tr>-->
 <!--                        </table>-->
-                        
-                        
         </t>
     </t>
 </t>

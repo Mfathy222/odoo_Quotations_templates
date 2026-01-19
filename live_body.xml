@@ -965,6 +965,7 @@
                                         Payment as Per stages direct by Our Bank Account
                                         </div>
                                         <table class="ss-no-border-td" style="width:100%; font-size:12px; border-collapse:collapse; height:70px !important;">
+
                                             <t t-if="doc.payment_term_id and doc.payment_term_id.line_ids">
                                                 <t t-foreach="doc.payment_term_id.line_ids" t-as="pt_line">
                                                     <tr>
@@ -986,6 +987,7 @@
                                                     </tr>
                                                 </t>
                                             </t>
+                                            
                                             <t t-else="">
                                                 <tr style="text-align:center left !important;">
                                                     <td style="border:none !important;">Stage 1:</td>
